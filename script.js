@@ -265,7 +265,6 @@ function renderStaticViews() {
 
   $("#exploreView").innerHTML = `
     <header class="explore-intro">
-      <p class="eyebrow">Exploración precisa</p>
       <h1>Encontrá el viaje que encaja con tu plan</h1>
     </header>
 
