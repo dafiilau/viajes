@@ -411,6 +411,9 @@ function setSession(profile) {
   };
   state.currentProfile = profile;
   state.savedTrips = profile.savedTrips || [];
+  if (!state.currentProfile.visitedCountries) {
+    state.currentProfile.visitedCountries = [];
+  }
   localStorage.setItem(storageKeys.session, profile.uid);
   renderAll();
   showView("home");
@@ -892,10 +895,14 @@ async function createTrip(event) {
   event.preventDefault();
   if (!state.currentUser || !state.currentProfile) return;
 
+  const destinationInput = $("#tripDestination").value.trim();
+  const location = tripLocation({ destination: destinationInput });
+
   const trip = {
     userId: state.currentUser.uid,
     username: state.currentProfile.username,
-    destination: $("#tripDestination").value.trim(),
+    destination: destinationInput,
+    country: location.country,
     duration: Number($("#tripDuration").value),
     budget: Number($("#tripBudget").value),
     type: $("#tripType").value,
@@ -904,7 +911,7 @@ async function createTrip(event) {
     transport: $("#tripTransport").value.trim(),
     notes: $("#tripNotes").value.trim(),
     recommendations: currentRecommendations().filter((rec) => rec.text),
-    image: imageForDestination($("#tripDestination").value)
+    image: imageForDestination(destinationInput)
   };
 
   try {
@@ -916,6 +923,9 @@ async function createTrip(event) {
     const newTrip = await res.json();
     if (res.ok) {
       state.trips = [newTrip, ...state.trips];
+      if (!state.currentProfile.visitedCountries.includes(location.country)) {
+        state.currentProfile.visitedCountries.push(location.country);
+      }
       event.target.reset();
       $("#recommendationsBuilder").innerHTML = "";
       addRecommendationLine("positive");

@@ -20,7 +20,8 @@ module.exports = async (req, res) => {
         avatar,
         followers: [],
         following: [],
-        savedTrips: []
+        savedTrips: [],
+        visitedCountries: []
       };
       await collection.insertOne(user);
       return res.status(200).json(user);

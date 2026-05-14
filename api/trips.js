@@ -17,6 +17,14 @@ module.exports = async (req, res) => {
       createdAt: new Date().toISOString()
     };
     await collection.insertOne(newTrip);
+
+    if (tripData.userId && tripData.country) {
+      await db.collection('users').updateOne(
+        { uid: tripData.userId },
+        { $addToSet: { visitedCountries: tripData.country } }
+      );
+    }
+
     return res.status(201).json(newTrip);
   }
 
