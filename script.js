@@ -844,44 +844,6 @@ async function renderWorldMap() {
         if (visitedIsos.includes(id)) {
           path.classList.add("visited");
         }
-        
-        // Agregar interactividad
-        path.style.cursor = "pointer";
-        path.addEventListener("click", async () => {
-          // Buscar el nombre del país desde el ISO
-          let countryName = path.getAttribute("aria-label") || id;
-          const entry = allCountries.find(c => c.iso === id);
-          if (entry) countryName = entry.name;
-          
-          const isVisited = path.classList.contains("visited");
-          const action = isVisited ? "remove" : "add";
-
-          // Optimistic UI update
-          if (action === "add") {
-            path.classList.add("visited");
-            if (!state.currentProfile.visitedCountries.includes(countryName)) {
-              state.currentProfile.visitedCountries.push(countryName);
-            }
-            showToast("Agregado a tus destinos visitados");
-          } else {
-            path.classList.remove("visited");
-            state.currentProfile.visitedCountries = state.currentProfile.visitedCountries.filter(c => c !== countryName);
-            showToast("Removido de tus destinos visitados");
-          }
-          
-          // Re-render minimal header instead of full profile to just update count without redrawing the SVG
-          updateMapStats();
-          // Persistir en backend
-          try {
-            await fetch('/api/users', {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ uid: state.currentUser.uid, country: countryName, action })
-            });
-          } catch (e) {
-            console.error("Error guardando el país", e);
-          }
-        });
       });
       
       // Full screen map logic
@@ -911,6 +873,7 @@ async function renderWorldMap() {
             // Listeners in cloned SVG
             const clonedPaths = clonedSvg.querySelectorAll("path");
             clonedPaths.forEach(path => {
+              path.style.cursor = "pointer";
               path.addEventListener("click", async () => {
                 const isVisited = path.classList.contains("visited");
                 const action = isVisited ? "remove" : "add";

@@ -1569,7 +1569,7 @@ input[type="range"] {
   transition: fill 0.3s var(--ease), opacity 0.2s var(--ease);
 }
 
-#worldMapContainer svg path:hover, #panzoomContainer svg path:hover {
+#panzoomContainer svg path:hover {
   fill: var(--blue-soft);
   opacity: 0.8;
 }
