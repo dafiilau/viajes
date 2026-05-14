@@ -1386,7 +1386,7 @@ input[type="range"] {
 .profile-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
+  gap: 5px;
 }
 
 .profile-stat {
