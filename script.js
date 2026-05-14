@@ -783,16 +783,9 @@ function renderProfile() {
         <div class="profile-stat"><div><strong>${(profile.following || []).length}</strong> <span>Seguidos</span></div></div>
       </div>
     </section>
-    <button id="logoutButton" class="btn btn-soft" type="button" style="width:100%;margin-bottom:18px;">Cerrar sesión</button>
-    <div class="section-title"><h2>Viajeros que seguís</h2><span class="eyebrow">${followedUsers.length} perfiles</span></div>
-    <section>${followedUsers.length ? followedUsers.map((user) => `
-      <article class="traveler-card" data-user-profile="${user.uid}" style="cursor:pointer">
-        <div class="avatar-wrap"><img class="avatar" src="${user.avatar || avatarFor(user.username)}" alt="${escapeHTML(user.username)}" /></div>
-        <div><h4>${escapeHTML(user.username)}</h4><p>${(user.followers || []).length} seguidores</p></div>
-        <button class="follow-btn is-following" data-follow="${user.uid}" type="button">Siguiendo</button>
-      </article>
-    `).join("") : renderEmpty("Todavía no seguís viajeros", "Podés seguir al creador desde el detalle de cualquier viaje.")}</section>
-    <div class="section-title" style="margin-top: 24px;">
+    <button id="logoutButton" class="btn btn-soft" type="button" style="width:100%;margin-bottom:24px;">Cerrar sesión</button>
+
+    <div class="section-title">
       <h2>Mi Mapa</h2>
       <button id="expandMapBtn" class="link-button" type="button" aria-label="Expandir mapa" style="display:flex; align-items:center; gap:4px;">
         Ver grande <svg viewBox="0 0 24 24" fill="none" style="width:16px;height:16px;"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -816,8 +809,20 @@ function renderProfile() {
     <section class="map-section">
       <div id="worldMapContainer"></div>
     </section>
-    <div class="section-title"><h2>Mis viajes</h2><span class="eyebrow">${myTrips.length} publicados</span></div>
+
+    <div class="section-title" style="margin-top: 24px;"><h2>Mis viajes</h2><span class="eyebrow">${myTrips.length} publicados</span></div>
     <section class="trip-list">${myTrips.length ? myTrips.map(renderTripCard).join("") : renderEmpty("Tu primer viaje espera", "Compartí presupuesto, recomendaciones y notas para ayudar a otros viajeros.")}</section>
+
+    <div class="section-title" style="margin-top: 24px;">
+      <h2>Viajeros que seguís</h2>
+      <span class="eyebrow">${followedUsers.length} perfiles</span>
+    </div>
+    <div class="trip-rail follower-rail">${followedUsers.length ? followedUsers.map((user) => `
+      <article class="traveler-card traveler-card--compact" data-user-profile="${user.uid}" style="cursor:pointer;min-width:160px;">
+        <div class="avatar-wrap"><img class="avatar" src="${user.avatar || avatarFor(user.username)}" alt="${escapeHTML(user.username)}" /></div>
+        <div><h4 style="margin:8px 0 2px;font-size:14px;">${escapeHTML(user.username)}</h4><p style="margin:0;font-size:12px;color:var(--muted);">${(user.followers || []).length} seguidores</p></div>
+      </article>
+    `).join("") : renderEmpty("Todavía no seguís viajeros", "Podés seguir al creador desde el detalle de cualquier viaje.")}</div>
   `;
   setTimeout(renderWorldMap, 50);
 }
@@ -1137,10 +1142,12 @@ async function toggleFollow(userId) {
   const following = state.currentProfile?.following || [];
   const isFollowing = following.includes(userId);
 
+  // 1. Actualizar estado local del perfil logueado
   state.currentProfile.following = isFollowing
     ? following.filter((id) => id !== userId)
     : [...following, userId];
 
+  // 2. Actualizar la cantidad de seguidores del usuario objetivo
   const target = state.users.find((user) => user.uid === userId);
   if (target) {
     target.followers = isFollowing
@@ -1148,10 +1155,14 @@ async function toggleFollow(userId) {
       : [...(target.followers || []), state.currentUser.uid];
   }
 
+  // 3. Refrescar TODAS las vistas relevantes
   renderHome();
   renderProfile();
+  renderTravelers();
   if (state.route === "detail" && state.activeTripId) renderDetail(state.activeTripId);
+  if (state.route === "otherProfile" && state.activeProfileId) renderOtherProfile(state.activeProfileId);
 
+  // 4. Persistir en backend
   try {
     await fetch('/api/interact', {
       method: 'POST',
