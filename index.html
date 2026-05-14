@@ -180,6 +180,31 @@
         </button>
       </nav>
 
+      <div id="fullScreenMapModal" class="view" aria-label="Mapa Pantalla Completa" style="display: none; position: absolute; inset: 0; z-index: 100; background: var(--surface); padding: 0;">
+        <header class="top-actions" style="position: absolute; top: 0; left: 0; right: 0; z-index: 10; padding: 24px 18px; background: linear-gradient(180deg, var(--surface) 0%, rgba(255,255,255,0) 100%);">
+          <button id="closeMapBtn" class="icon-button" aria-label="Cerrar"><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <h2>Mi Mapa</h2>
+        </header>
+        <div id="panzoomContainer" style="width: 100%; height: 100dvh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: #eef3fa;">
+          <!-- SVG clonado irá aquí -->
+        </div>
+        <button id="fabAddCountry" class="fab is-visible" type="button" aria-label="Añadir país" style="z-index: 10; bottom: 40px; right: 20px;">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div id="countryListSheet" class="bottom-sheet" style="display: none; position: absolute; inset: 0; z-index: 110; flex-direction: column; justify-content: flex-end;">
+        <div class="sheet-overlay" style="position: absolute; inset: 0; background: rgba(14,35,68,0.4);"></div>
+        <div class="sheet-content" style="position: relative; background: var(--surface); height: 80vh; border-radius: 30px 30px 0 0; display: flex; flex-direction: column; padding: 24px 18px 0;">
+          <div class="sheet-handle" style="width: 40px; height: 5px; border-radius: 5px; background: #dfe8f5; margin: 0 auto 20px;"></div>
+          <div class="search-bar" style="margin-bottom: 20px;">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <input id="countrySearchInput" type="search" placeholder="Buscar país..." />
+          </div>
+          <div id="countryList" style="overflow-y: auto; flex: 1; padding-bottom: env(safe-area-inset-bottom, 20px); display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+      </div>
+
       <button id="fabCreate" class="fab" type="button" aria-label="Crear viaje">
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
       </button>
@@ -187,6 +212,8 @@
     </div>
   </main>
 
+  <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+  <script src="countries.js"></script>
   <script src="script.js" defer></script>
 </body>
 </html>

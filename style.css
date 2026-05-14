@@ -1540,6 +1540,69 @@ input[type="range"] {
   display: none !important;
 }
 
+/* --- MAPA INTERACTIVO --- */
+.map-section {
+  margin-bottom: 18px;
+}
+
+#worldMapContainer {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+#worldMapContainer svg, #panzoomContainer svg {
+  width: 100%;
+  height: auto;
+}
+
+#worldMapContainer svg path, #panzoomContainer svg path {
+  fill: #e4eaf3;
+  stroke: var(--surface);
+  stroke-width: 0.5px;
+  transition: fill 0.3s var(--ease), opacity 0.2s var(--ease);
+}
+
+#worldMapContainer svg path:hover, #panzoomContainer svg path:hover {
+  fill: var(--blue-soft);
+  opacity: 0.8;
+}
+
+#worldMapContainer svg path.visited, #panzoomContainer svg path.visited {
+  fill: var(--blue);
+}
+
+#fullScreenMapModal {
+  padding: 0 !important;
+}
+
+/* --- BOTTOM SHEET --- */
+.bottom-sheet {
+  animation: sheetFadeIn 0.3s var(--ease);
+}
+@keyframes sheetFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sheet-content {
+  animation: sheetSlideUp 0.3s var(--ease);
+}
+@keyframes sheetSlideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.country-item:hover {
+  background: var(--line) !important;
+}
+
 @media (min-width: 760px) {
   .phone-frame {
     border-left: 1px solid rgba(14, 35, 68, 0.06);

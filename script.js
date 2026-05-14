@@ -37,35 +37,35 @@ const homeCategories = [
 ];
 
 const countryMeta = {
-  portugal: { continent: "europa", tags: ["europa", "ciudad", "cultura", "escapada"] },
-  argentina: { continent: "america", tags: ["america", "naturaleza", "aventura", "low budget"] },
-  mexico: { continent: "america", tags: ["america", "playa", "gastronomia", "cultura"] },
-  francia: { continent: "europa", tags: ["europa", "cultura", "ciudad", "romantico"] },
-  japon: { continent: "asia", tags: ["asia", "ciudad", "gastronomia", "cultura"] },
-  espana: { continent: "europa", tags: ["europa", "ciudad", "cultura", "low budget"] },
-  italia: { continent: "europa", tags: ["europa", "cultura", "gastronomia", "familia"] },
-  "reino unido": { continent: "europa", tags: ["europa", "ciudad", "museos", "amigos"] },
-  "paises bajos": { continent: "europa", tags: ["europa", "ciudad", "pareja"] },
-  alemania: { continent: "europa", tags: ["europa", "cultura", "historia", "solo"] },
-  "republica checa": { continent: "europa", tags: ["europa", "low budget", "cultura"] },
-  austria: { continent: "europa", tags: ["europa", "familia", "cultura"] },
-  turquia: { continent: "asia", tags: ["asia", "europa", "gastronomia", "cultura"] },
-  marruecos: { continent: "africa", tags: ["africa", "cultura", "pareja"] },
-  egipto: { continent: "africa", tags: ["africa", "aventura", "historia"] },
-  "emiratos arabes": { continent: "asia", tags: ["asia", "lujo", "ciudad"] },
-  indonesia: { continent: "asia", tags: ["asia", "naturaleza", "playa", "solo"] },
-  tailandia: { continent: "asia", tags: ["asia", "low budget", "gastronomia", "naturaleza"] },
-  vietnam: { continent: "asia", tags: ["asia", "low budget", "gastronomia"] },
-  "corea del sur": { continent: "asia", tags: ["asia", "ciudad", "amigos"] },
-  singapur: { continent: "asia", tags: ["asia", "familia", "gastronomia"] },
-  australia: { continent: "oceania", tags: ["oceania", "playa", "pareja"] },
-  "nueva zelanda": { continent: "oceania", tags: ["oceania", "aventura", "naturaleza"] },
-  "estados unidos": { continent: "america", tags: ["america", "ciudad", "playa", "familia"] },
-  colombia: { continent: "america", tags: ["america", "playa", "ciudad", "amigos"] },
-  peru: { continent: "america", tags: ["america", "gastronomia", "aventura", "cultura"] },
-  chile: { continent: "america", tags: ["america", "naturaleza", "ciudad", "aventura"] },
-  uruguay: { continent: "america", tags: ["america", "escapada corta", "ciudad"] },
-  brasil: { continent: "america", tags: ["america", "playa", "familia", "amigos"] }
+  portugal: { iso: "pt", continent: "europa", tags: ["europa", "ciudad", "cultura", "escapada"] },
+  argentina: { iso: "ar", continent: "america", tags: ["america", "naturaleza", "aventura", "low budget"] },
+  mexico: { iso: "mx", continent: "america", tags: ["america", "playa", "gastronomia", "cultura"] },
+  francia: { iso: "fr", continent: "europa", tags: ["europa", "cultura", "ciudad", "romantico"] },
+  japon: { iso: "jp", continent: "asia", tags: ["asia", "ciudad", "gastronomia", "cultura"] },
+  espana: { iso: "es", continent: "europa", tags: ["europa", "ciudad", "cultura", "low budget"] },
+  italia: { iso: "it", continent: "europa", tags: ["europa", "cultura", "gastronomia", "familia"] },
+  "reino unido": { iso: "gb", continent: "europa", tags: ["europa", "ciudad", "museos", "amigos"] },
+  "paises bajos": { iso: "nl", continent: "europa", tags: ["europa", "ciudad", "pareja"] },
+  alemania: { iso: "de", continent: "europa", tags: ["europa", "cultura", "historia", "solo"] },
+  "republica checa": { iso: "cz", continent: "europa", tags: ["europa", "low budget", "cultura"] },
+  austria: { iso: "at", continent: "europa", tags: ["europa", "familia", "cultura"] },
+  turquia: { iso: "tr", continent: "asia", tags: ["asia", "europa", "gastronomia", "cultura"] },
+  marruecos: { iso: "ma", continent: "africa", tags: ["africa", "cultura", "pareja"] },
+  egipto: { iso: "eg", continent: "africa", tags: ["africa", "aventura", "historia"] },
+  "emiratos arabes": { iso: "ae", continent: "asia", tags: ["asia", "lujo", "ciudad"] },
+  indonesia: { iso: "id", continent: "asia", tags: ["asia", "naturaleza", "playa", "solo"] },
+  tailandia: { iso: "th", continent: "asia", tags: ["asia", "low budget", "gastronomia", "naturaleza"] },
+  vietnam: { iso: "vn", continent: "asia", tags: ["asia", "low budget", "gastronomia"] },
+  "corea del sur": { iso: "kr", continent: "asia", tags: ["asia", "ciudad", "amigos"] },
+  singapur: { iso: "sg", continent: "asia", tags: ["asia", "familia", "gastronomia"] },
+  australia: { iso: "au", continent: "oceania", tags: ["oceania", "playa", "pareja"] },
+  "nueva zelanda": { iso: "nz", continent: "oceania", tags: ["oceania", "aventura", "naturaleza"] },
+  "estados unidos": { iso: "us", continent: "america", tags: ["america", "ciudad", "playa", "familia"] },
+  colombia: { iso: "co", continent: "america", tags: ["america", "playa", "ciudad", "amigos"] },
+  peru: { iso: "pe", continent: "america", tags: ["america", "gastronomia", "aventura", "cultura"] },
+  chile: { iso: "cl", continent: "america", tags: ["america", "naturaleza", "ciudad", "aventura"] },
+  uruguay: { iso: "uy", continent: "america", tags: ["america", "escapada corta", "ciudad"] },
+  brasil: { iso: "br", continent: "america", tags: ["america", "playa", "familia", "amigos"] }
 };
 
 const storageKeys = {
@@ -786,10 +786,312 @@ function renderProfile() {
         <button class="follow-btn is-following" data-follow="${user.uid}" type="button">Siguiendo</button>
       </article>
     `).join("") : renderEmpty("Todavía no seguís viajeros", "Podés seguir al creador desde el detalle de cualquier viaje.")}</section>
+    <div class="section-title" style="margin-top: 24px;">
+      <h2>Mi Mapa</h2>
+      <button id="expandMapBtn" class="link-button" type="button" aria-label="Expandir mapa" style="display:flex; align-items:center; gap:4px;">
+        Ver grande <svg viewBox="0 0 24 24" fill="none" style="width:16px;height:16px;"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    
+    <div id="mapStats" style="display:flex; align-items:center; gap: 14px; margin-bottom: 16px; background: var(--surface); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm);">
+      <div style="position: relative; width: 56px; height: 56px;">
+        <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);">
+          <circle cx="18" cy="18" r="16" fill="none" stroke="#eef3fa" stroke-width="4"></circle>
+          <circle id="mapProgressCircle" cx="18" cy="18" r="16" fill="none" stroke="var(--blue)" stroke-width="4" stroke-dasharray="100 100" stroke-dashoffset="100" stroke-linecap="round" style="transition: stroke-dashoffset 1s ease-out;"></circle>
+        </svg>
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: var(--navy);" id="mapPercentageText">0%</div>
+      </div>
+      <div>
+        <h3 style="margin: 0; font-size: 16px; color: var(--navy);">Explorador del Mundo</h3>
+        <p style="margin: 4px 0 0; font-size: 13px; color: var(--muted);" id="mapCountriesText">Has visitado 0 de 195 países.</p>
+      </div>
+    </div>
+
+    <section class="map-section">
+      <div id="worldMapContainer"></div>
+    </section>
     <div class="section-title"><h2>Mis viajes</h2><span class="eyebrow">${myTrips.length} publicados</span></div>
     <section class="trip-list">${myTrips.length ? myTrips.map(renderTripCard).join("") : renderEmpty("Tu primer viaje espera", "Compartí presupuesto, recomendaciones y notas para ayudar a otros viajeros.")}</section>
   `;
+  setTimeout(renderWorldMap, 50);
 }
+
+async function renderWorldMap() {
+  const container = $("#worldMapContainer");
+  if (!container) return;
+  
+  try {
+    const res = await fetch("map.svg");
+    if (!res.ok) throw new Error("SVG error");
+    const svgText = await res.text();
+    container.innerHTML = svgText;
+    
+    const svg = container.querySelector("svg");
+    if (svg) {
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "auto");
+      
+      // Mapear países visitados a sus IDs
+      const visitedIsos = (state.currentProfile.visitedCountries || []).map(countryName => {
+        const normalized = normalizeText(countryName);
+        const entry = allCountries.find(c => normalizeText(c.name) === normalized);
+        return entry ? entry.iso : null;
+      }).filter(Boolean);
+      
+      const paths = svg.querySelectorAll("path");
+      paths.forEach(path => {
+        const id = path.id.toLowerCase();
+        if (visitedIsos.includes(id)) {
+          path.classList.add("visited");
+        }
+        
+        // Agregar interactividad
+        path.style.cursor = "pointer";
+        path.addEventListener("click", async () => {
+          // Buscar el nombre del país desde el ISO
+          let countryName = path.getAttribute("aria-label") || id;
+          const entry = allCountries.find(c => c.iso === id);
+          if (entry) countryName = entry.name;
+          
+          const isVisited = path.classList.contains("visited");
+          const action = isVisited ? "remove" : "add";
+
+          // Optimistic UI update
+          if (action === "add") {
+            path.classList.add("visited");
+            if (!state.currentProfile.visitedCountries.includes(countryName)) {
+              state.currentProfile.visitedCountries.push(countryName);
+            }
+            showToast("Agregado a tus destinos visitados");
+          } else {
+            path.classList.remove("visited");
+            state.currentProfile.visitedCountries = state.currentProfile.visitedCountries.filter(c => c !== countryName);
+            showToast("Removido de tus destinos visitados");
+          }
+          
+          // Re-render minimal header instead of full profile to just update count without redrawing the SVG
+          updateMapStats();
+          // Persistir en backend
+          try {
+            await fetch('/api/users', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ uid: state.currentUser.uid, country: countryName, action })
+            });
+          } catch (e) {
+            console.error("Error guardando el país", e);
+          }
+        });
+      });
+      
+      // Full screen map logic
+      const expandMapBtn = document.getElementById("expandMapBtn");
+      if (expandMapBtn) {
+        expandMapBtn.addEventListener("click", () => {
+          const fullScreenModal = document.getElementById("fullScreenMapModal");
+          const panzoomContainer = document.getElementById("panzoomContainer");
+          
+          if (!panzoomContainer.querySelector("svg")) {
+            const clonedSvg = svg.cloneNode(true);
+            clonedSvg.style.width = "100%";
+            clonedSvg.style.height = "100%";
+            clonedSvg.style.minHeight = "100dvh";
+            clonedSvg.style.display = "block";
+            panzoomContainer.appendChild(clonedSvg);
+            
+            // Inicializar Panzoom
+            const pz = Panzoom(clonedSvg, {
+              maxScale: 5,
+              minScale: 0.5,
+              contain: 'outside',
+              canvas: true
+            });
+            panzoomContainer.parentElement.addEventListener('wheel', pz.zoomWithWheel);
+            
+            // Listeners in cloned SVG
+            const clonedPaths = clonedSvg.querySelectorAll("path");
+            clonedPaths.forEach(path => {
+              path.addEventListener("click", async () => {
+                const isVisited = path.classList.contains("visited");
+                const action = isVisited ? "remove" : "add";
+                const id = path.id.toLowerCase();
+                let countryName = path.getAttribute("aria-label") || id;
+                const entry = allCountries.find(c => c.iso === id);
+                if (entry) countryName = entry.name;
+                
+                // Toggle en modal y en original
+                if (action === "add") {
+                  if (!state.currentProfile.visitedCountries.includes(countryName)) {
+                    state.currentProfile.visitedCountries.push(countryName);
+                  }
+                  syncMapWithCountry(countryName, true);
+                  showToast("Agregado a tus destinos visitados");
+                } else {
+                  state.currentProfile.visitedCountries = state.currentProfile.visitedCountries.filter(c => c !== countryName);
+                  syncMapWithCountry(countryName, false);
+                  showToast("Removido de tus destinos visitados");
+                }
+                
+                updateMapStats();
+                
+                // Actualizar la lista si está abierta
+                renderCountryList();
+
+                try {
+                  await fetch('/api/users', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ uid: state.currentUser.uid, country: countryName, action })
+                  });
+                } catch (e) {
+                  console.error(e);
+                }
+              });
+            });
+          }
+          
+          // Sincronizar clases antes de abrir por si hubo cambios en la lista
+          const clonedSvg = panzoomContainer.querySelector("svg");
+          if (clonedSvg) {
+             const visitedIsos = state.currentProfile.visitedCountries.map(c => {
+               const n = normalizeText(c);
+               return countryMeta[n] ? countryMeta[n].iso : null;
+             }).filter(Boolean);
+             clonedSvg.querySelectorAll("path").forEach(p => {
+               if (visitedIsos.includes(p.id.toLowerCase())) p.classList.add("visited");
+               else p.classList.remove("visited");
+             });
+          }
+
+          fullScreenModal.style.display = "block";
+          document.getElementById("app").style.overflow = "hidden";
+        });
+      }
+      
+      // Initialize stats on load
+      updateMapStats();
+    }
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = "<p class='eyebrow'>No se pudo cargar el mapa.</p>";
+  }
+}
+
+// Escuchar botón cerrar mapa grande
+document.getElementById("closeMapBtn")?.addEventListener("click", () => {
+  document.getElementById("fullScreenMapModal").style.display = "none";
+  document.getElementById("app").style.overflow = "hidden"; // Mantener oculto si el app principal no scrollea (o "auto" dependiendo del layout original)
+});
+
+// ==========================================
+// LISTA DE PAÍSES Y BUSCADOR (FASE 4)
+// ==========================================
+function renderCountryList(filterText = "") {
+  const container = document.getElementById("countryList");
+  if (!container || typeof allCountries === "undefined") return;
+  
+  const visited = state.currentProfile.visitedCountries || [];
+  
+  const filtered = allCountries.filter(c => 
+    c.name.toLowerCase().includes(filterText.toLowerCase()) || 
+    c.iso.includes(filterText.toLowerCase())
+  );
+  
+  container.innerHTML = filtered.map(c => {
+    const isChecked = visited.includes(c.name) ? "checked" : "";
+    return `
+      <label class="country-item" style="display:flex; justify-content:space-between; align-items:center; padding: 12px 16px; background: var(--surface-soft); border-radius: 16px; cursor: pointer;">
+        <span style="font-size: 16px; font-weight: 600;">${c.flag} ${c.name}</span>
+        <input type="checkbox" class="country-toggle" data-iso="${c.iso}" data-name="${c.name}" ${isChecked} style="width: 20px; height: 20px; accent-color: var(--blue);">
+      </label>
+    `;
+  }).join("");
+
+  // Agregar eventos a los checkboxes
+  container.querySelectorAll(".country-toggle").forEach(toggle => {
+    toggle.addEventListener("change", async (e) => {
+      const isChecked = e.target.checked;
+      const countryName = e.target.getAttribute("data-name");
+      const iso = e.target.getAttribute("data-iso");
+      const action = isChecked ? "add" : "remove";
+      
+      // Update state
+      if (isChecked) {
+        if (!state.currentProfile.visitedCountries.includes(countryName)) {
+          state.currentProfile.visitedCountries.push(countryName);
+        }
+      } else {
+        state.currentProfile.visitedCountries = state.currentProfile.visitedCountries.filter(c => c !== countryName);
+      }
+      
+      // Update profile count and stats
+      updateMapStats();
+      
+      // Update SVGs
+      syncMapWithCountry(countryName, isChecked);
+      
+      // Backend
+      try {
+        await fetch('/api/users', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ uid: state.currentUser.uid, country: countryName, action })
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  });
+}
+
+function syncMapWithCountry(countryName, isVisited) {
+  const normalized = normalizeText(countryName);
+  const entry = allCountries.find(c => normalizeText(c.name) === normalized);
+  const iso = entry ? entry.iso : null;
+  if (!iso) return;
+  
+  const svgs = [document.querySelector("#worldMapContainer svg"), document.querySelector("#panzoomContainer svg")];
+  svgs.forEach(svgEl => {
+    if (!svgEl) return;
+    const path = svgEl.querySelector(`path[id="${iso}"]`);
+    if (path) {
+      if (isVisited) path.classList.add("visited");
+      else path.classList.remove("visited");
+    }
+  });
+}
+
+function updateMapStats() {
+  const visitedCount = (state.currentProfile.visitedCountries || []).length;
+  const total = 195;
+  const percentage = Math.round((visitedCount / total) * 100);
+  
+  const circle = document.getElementById("mapProgressCircle");
+  const percentText = document.getElementById("mapPercentageText");
+  const countText = document.getElementById("mapCountriesText");
+  
+  if (circle && percentText && countText) {
+    percentText.textContent = `${percentage}%`;
+    countText.textContent = `Has visitado ${visitedCount} de ${total} países.`;
+    // El stroke-dasharray es 100 100, por lo tanto el dashoffset va de 100 (0%) a 0 (100%)
+    circle.style.strokeDashoffset = 100 - percentage;
+  }
+}
+
+// FAB y Buscador events
+document.getElementById("fabAddCountry")?.addEventListener("click", () => {
+  document.getElementById("countryListSheet").style.display = "flex";
+  renderCountryList();
+  document.getElementById("countrySearchInput").focus();
+});
+
+document.querySelector("#countryListSheet .sheet-overlay")?.addEventListener("click", () => {
+  document.getElementById("countryListSheet").style.display = "none";
+});
+
+document.getElementById("countrySearchInput")?.addEventListener("input", (e) => {
+  renderCountryList(e.target.value);
+});
 
 function renderPreview() {
   const destination = $("#tripDestination")?.value || "Nuevo destino";
@@ -925,6 +1227,7 @@ async function createTrip(event) {
       state.trips = [newTrip, ...state.trips];
       if (!state.currentProfile.visitedCountries.includes(location.country)) {
         state.currentProfile.visitedCountries.push(location.country);
+        syncMapWithCountry(location.country, true);
       }
       event.target.reset();
       $("#recommendationsBuilder").innerHTML = "";
