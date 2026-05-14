@@ -138,8 +138,6 @@ img {
   border-radius: 34px;
   display: grid;
   place-items: center;
-  background: #fff;
-  box-shadow: var(--shadow-lg);
   margin-bottom: 25px;
   overflow: hidden;
 }
