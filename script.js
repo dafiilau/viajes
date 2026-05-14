@@ -626,8 +626,8 @@ function renderDetail(tripId) {
     avatar: avatarFor(trip.username || "Viajero real"),
     followers: []
   };
-  const isOwnTrip = creator.uid === state.currentUser?.uid;
-  const isFollowingCreator = (state.currentProfile?.following || []).includes(creator.uid);
+  const isOwnTrip = String(creator.uid) === String(state.currentUser?.uid);
+  const isFollowingCreator = (state.currentProfile?.following || []).map(String).includes(String(creator.uid));
 
   $("#detailView").innerHTML = `
     <div class="detail-hero">
@@ -710,11 +710,11 @@ function renderOtherProfile(userId) {
     showView("profile");
     return;
   }
-  const user = state.users.find((u) => u.uid === userId);
+  const user = state.users.find((u) => String(u.uid) === String(userId));
   if (!user) return;
 
-  const userTrips = state.trips.filter((trip) => trip.userId === userId);
-  const following = (state.currentProfile?.following || []).includes(userId);
+  const userTrips = state.trips.filter((trip) => String(trip.userId) === String(userId));
+  const following = (state.currentProfile?.following || []).map(String).includes(String(userId));
 
   $("#otherProfileView").innerHTML = `
     <header class="top-actions">
@@ -744,10 +744,10 @@ function renderOtherProfile(userId) {
 }
 
 function renderTravelers() {
-  const users = state.users.filter((user) => user.uid !== state.currentUser?.uid);
+  const users = state.users.filter((user) => String(user.uid) !== String(state.currentUser?.uid));
   $("#travelerList").innerHTML = users.length
     ? users.map((user) => {
-      const following = (state.currentProfile?.following || []).includes(user.uid);
+      const following = (state.currentProfile?.following || []).map(String).includes(String(user.uid));
       const tripsCount = state.trips.filter((trip) => trip.userId === user.uid).length;
       return `
         <article class="traveler-card" data-user-profile="${user.uid}" style="cursor:pointer">
@@ -1106,8 +1106,8 @@ function addRecommendationLine(kind = "positive", text = "") {
       <option value="positive" ${kind === "positive" ? "selected" : ""}>👍 Recomiendo</option>
       <option value="negative" ${kind === "negative" ? "selected" : ""}>👎 No recomiendo</option>
     </select>
-    <input type="text" placeholder="Ej: Comer lejos de la zona turística" value="${escapeHTML(text)}" />
     <button class="tiny-delete" type="button" aria-label="Eliminar recomendación">${icons.trash}</button>
+    <input type="text" placeholder="Ej: Comer lejos de la zona turística" value="${escapeHTML(text)}" />
   `;
   $("#recommendationsBuilder").appendChild(wrapper);
 }
@@ -1138,24 +1138,30 @@ async function toggleSaved(tripId) {
 }
 
 async function toggleFollow(userId) {
-  if (!state.currentUser || userId === state.currentUser.uid) return;
-  const following = state.currentProfile?.following || [];
-  const isFollowing = following.includes(userId);
+  // Normalizar siempre a string para evitar errores de comparación con IDs de MongoDB vs semilla
+  const targetId = String(userId);
+  
+  if (!state.currentUser || targetId === String(state.currentUser.uid)) return;
+  
+  const following = (state.currentProfile?.following || []).map(String);
+  const isFollowing = following.includes(targetId);
 
-  // 1. Actualizar estado local del perfil logueado
+  // 1. Actualizar following del perfil logueado (siempre, independiente de si el target existe en state.users)
   state.currentProfile.following = isFollowing
-    ? following.filter((id) => id !== userId)
-    : [...following, userId];
+    ? following.filter((id) => id !== targetId)
+    : [...following, targetId];
 
-  // 2. Actualizar la cantidad de seguidores del usuario objetivo
-  const target = state.users.find((user) => user.uid === userId);
+  // 2. Actualizar followers del target solo si existe en state.users (actualización segura)
+  const target = state.users.find((user) => String(user.uid) === targetId);
   if (target) {
+    const myUid = String(state.currentUser.uid);
+    const currentFollowers = (target.followers || []).map(String);
     target.followers = isFollowing
-      ? (target.followers || []).filter((id) => id !== state.currentUser.uid)
-      : [...(target.followers || []), state.currentUser.uid];
+      ? currentFollowers.filter((id) => id !== myUid)
+      : [...currentFollowers, myUid];
   }
 
-  // 3. Refrescar TODAS las vistas relevantes
+  // 3. Refrescar vistas — el botón cambia de estado instantáneamente
   renderHome();
   renderProfile();
   renderTravelers();
@@ -1167,10 +1173,10 @@ async function toggleFollow(userId) {
     await fetch('/api/interact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'follow', userId: state.currentUser.uid, targetId: userId })
+      body: JSON.stringify({ action: 'follow', userId: state.currentUser.uid, targetId })
     });
   } catch (e) {
-    console.error(e);
+    console.error('toggleFollow persistence error:', e);
   }
 }
 

@@ -138,7 +138,9 @@ img {
   border-radius: 34px;
   display: grid;
   place-items: center;
-  margin-bottom: 25px
+  background: #fff;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 25px;
   overflow: hidden;
 }
 
@@ -1641,19 +1643,20 @@ input[type="range"] {
 }
 
 .rec-line select {
-  min-width: 140px;
+  flex: 1;
+  min-width: 0;
   appearance: none;
   -webkit-appearance: none;
   background-color: #f6f8fc;
   border: 1px solid #eef2f8;
   border-radius: 12px;
-  padding: 10px 32px 10px 14px;
-  font-size: 14px;
+  padding: 8px 32px 8px 12px;
+  font-size: 13px;
   color: var(--navy);
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6 9 6 6 6-6' stroke='%230e2344' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 18px;
+  background-position: right 10px center;
+  background-size: 16px;
   cursor: pointer;
   outline: none;
 }
@@ -1663,13 +1666,13 @@ input[type="range"] {
 }
 
 .rec-line input {
-  flex-grow: 1;
-  min-width: 200px;
+  width: 100%;
+  flex-basis: 100%;
   background-color: #f6f8fc;
   border: 1px solid #eef2f8;
   border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 14px;
+  padding: 8px 12px;
+  font-size: 13px;
   color: var(--navy);
   outline: none;
 }
@@ -1690,6 +1693,7 @@ input[type="range"] {
   place-items: center;
   padding: 0;
   transition: 0.2s;
+  align-self: flex-start;
 }
 
 .rec-line .tiny-delete svg {
