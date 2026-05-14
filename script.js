@@ -831,19 +831,46 @@ async function renderWorldMap() {
       svg.setAttribute("width", "100%");
       svg.setAttribute("height", "auto");
       
-      // Mapear países visitados a sus IDs
-      const visitedIsos = (state.currentProfile.visitedCountries || []).map(countryName => {
-        const normalized = normalizeText(countryName);
-        const entry = allCountries.find(c => normalizeText(c.name) === normalized);
-        return entry ? entry.iso : null;
-      }).filter(Boolean);
+      paintSvgMap(svg);
       
       const paths = svg.querySelectorAll("path");
       paths.forEach(path => {
-        const id = path.id.toLowerCase();
-        if (visitedIsos.includes(id)) {
-          path.classList.add("visited");
-        }
+        path.addEventListener("click", async () => {
+          if (document.getElementById("fullScreenMapModal").style.display !== "block") return;
+          
+          const isVisited = path.classList.contains("visited");
+          const action = isVisited ? "remove" : "add";
+          const id = path.id.toLowerCase();
+          let countryName = path.getAttribute("aria-label") || id;
+          const entry = allCountries.find(c => c.iso === id);
+          if (entry) countryName = entry.name;
+          
+          // Toggle
+          if (action === "add") {
+            if (!state.currentProfile.visitedCountries.includes(countryName)) {
+              state.currentProfile.visitedCountries.push(countryName);
+            }
+            syncMapWithCountry();
+            showToast("Agregado a tus destinos visitados");
+          } else {
+            state.currentProfile.visitedCountries = state.currentProfile.visitedCountries.filter(c => c !== countryName);
+            syncMapWithCountry();
+            showToast("Removido de tus destinos visitados");
+          }
+          
+          updateMapStats();
+          renderCountryList();
+
+          try {
+            await fetch('/api/users', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ uid: state.currentUser.uid, country: countryName, action })
+            });
+          } catch (e) {
+            console.error(e);
+          }
+        });
       });
       
       // Full screen map logic
@@ -853,77 +880,26 @@ async function renderWorldMap() {
           const fullScreenModal = document.getElementById("fullScreenMapModal");
           const panzoomContainer = document.getElementById("panzoomContainer");
           
-          if (!panzoomContainer.querySelector("svg")) {
-            const clonedSvg = svg.cloneNode(true);
-            clonedSvg.style.width = "100%";
-            clonedSvg.style.height = "100%";
-            clonedSvg.style.minHeight = "100dvh";
-            clonedSvg.style.display = "block";
-            panzoomContainer.appendChild(clonedSvg);
+          const svgNode = document.querySelector("#worldMapContainer svg");
+          if (svgNode) {
+            svgNode.style.width = "100%";
+            svgNode.style.height = "100%";
+            svgNode.style.minHeight = "100dvh";
+            svgNode.style.display = "block";
+            panzoomContainer.appendChild(svgNode);
             
             // Inicializar Panzoom
-            const pz = Panzoom(clonedSvg, {
-              maxScale: 5,
-              minScale: 0.5,
-              contain: 'outside',
-              canvas: true
-            });
-            panzoomContainer.parentElement.addEventListener('wheel', pz.zoomWithWheel);
-            
-            // Listeners in cloned SVG
-            const clonedPaths = clonedSvg.querySelectorAll("path");
-            clonedPaths.forEach(path => {
-              path.style.cursor = "pointer";
-              path.addEventListener("click", async () => {
-                const isVisited = path.classList.contains("visited");
-                const action = isVisited ? "remove" : "add";
-                const id = path.id.toLowerCase();
-                let countryName = path.getAttribute("aria-label") || id;
-                const entry = allCountries.find(c => c.iso === id);
-                if (entry) countryName = entry.name;
-                
-                // Toggle en modal y en original
-                if (action === "add") {
-                  if (!state.currentProfile.visitedCountries.includes(countryName)) {
-                    state.currentProfile.visitedCountries.push(countryName);
-                  }
-                  syncMapWithCountry(countryName, true);
-                  showToast("Agregado a tus destinos visitados");
-                } else {
-                  state.currentProfile.visitedCountries = state.currentProfile.visitedCountries.filter(c => c !== countryName);
-                  syncMapWithCountry(countryName, false);
-                  showToast("Removido de tus destinos visitados");
-                }
-                
-                updateMapStats();
-                
-                // Actualizar la lista si está abierta
-                renderCountryList();
-
-                try {
-                  await fetch('/api/users', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ uid: state.currentUser.uid, country: countryName, action })
-                  });
-                } catch (e) {
-                  console.error(e);
-                }
+            if (!svgNode._panzoomInitialized) {
+              const pz = Panzoom(svgNode, {
+                maxScale: 5,
+                minScale: 0.5,
+                contain: 'outside',
+                canvas: true
               });
-            });
-          }
-          
-          // Sincronizar clases antes de abrir por si hubo cambios en la lista
-          const clonedSvg = panzoomContainer.querySelector("svg");
-          if (clonedSvg) {
-             const visitedIsos = state.currentProfile.visitedCountries.map(c => {
-               const n = normalizeText(c);
-               return countryMeta[n] ? countryMeta[n].iso : null;
-             }).filter(Boolean);
-             clonedSvg.querySelectorAll("path").forEach(p => {
-               if (visitedIsos.includes(p.id.toLowerCase())) p.classList.add("visited");
-               else p.classList.remove("visited");
-             });
+              panzoomContainer.parentElement.addEventListener('wheel', pz.zoomWithWheel);
+              svgNode._panzoomInitialized = true;
+            }
+            paintSvgMap(svgNode);
           }
 
           fullScreenModal.style.display = "block";
@@ -942,8 +918,20 @@ async function renderWorldMap() {
 
 // Escuchar botón cerrar mapa grande
 document.getElementById("closeMapBtn")?.addEventListener("click", () => {
+  const svg = document.querySelector("#panzoomContainer svg");
+  if (svg) {
+    // Limpiar TODOS los estilos inyectados
+    svg.style.transform = ""; 
+    svg.style.transformOrigin = "";
+    svg.style.width = "";
+    svg.style.height = "";
+    svg.style.minHeight = "";
+    svg.style.display = "";
+    
+    document.getElementById("worldMapContainer").appendChild(svg);
+  }
   document.getElementById("fullScreenMapModal").style.display = "none";
-  document.getElementById("app").style.overflow = "hidden"; // Mantener oculto si el app principal no scrollea (o "auto" dependiendo del layout original)
+  document.getElementById("app").style.overflow = "hidden"; // Mantener oculto si el app principal no scrollea
 });
 
 // ==========================================
@@ -1007,21 +995,34 @@ function renderCountryList(filterText = "") {
   });
 }
 
-function syncMapWithCountry(countryName, isVisited) {
-  const normalized = normalizeText(countryName);
-  const entry = allCountries.find(c => normalizeText(c.name) === normalized);
-  const iso = entry ? entry.iso : null;
-  if (!iso) return;
+function paintSvgMap(svgElement) {
+  if (!svgElement) return;
   
-  const svgs = [document.querySelector("#worldMapContainer svg"), document.querySelector("#panzoomContainer svg")];
-  svgs.forEach(svgEl => {
-    if (!svgEl) return;
-    const path = svgEl.querySelector(`path[id="${iso}"]`);
-    if (path) {
-      if (isVisited) path.classList.add("visited");
-      else path.classList.remove("visited");
+  // 1. Obtener array de ISOs exactos
+  const visitedIsos = (state.currentProfile.visitedCountries || []).map(countryName => {
+    const entry = allCountries.find(c => normalizeText(c.name) === normalizeText(countryName));
+    return entry ? entry.iso.toLowerCase() : null;
+  }).filter(Boolean);
+  
+  // 2. Aplicar color de forma estricta
+  const paths = svgElement.querySelectorAll("path");
+  paths.forEach(path => {
+    const pathId = (path.id || path.getAttribute("id") || "").toLowerCase();
+    if (!pathId) return; // Ignorar océanos o grillas sin ID
+    
+    if (visitedIsos.includes(pathId)) {
+      path.classList.add("visited");
+      path.style.fill = "var(--blue)"; // Fallback visual estricto
+    } else {
+      path.classList.remove("visited");
+      path.style.fill = ""; // Restaurar para que actúe el CSS base
     }
   });
+}
+
+function syncMapWithCountry() {
+  const svg = document.querySelector("#worldMapContainer svg") || document.querySelector("#panzoomContainer svg");
+  if (svg) paintSvgMap(svg);
 }
 
 function updateMapStats() {
