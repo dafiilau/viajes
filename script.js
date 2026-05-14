@@ -461,13 +461,23 @@ function renderHome() {
   $("#popularGrid").innerHTML = popular.map((trip, index) => renderMiniTripCard(trip, index % 3 === 0)).join("");
   $("#recentRail").innerHTML = recent.map(renderSpotlightCard).join("");
 
-  if (highlight) {
-    const rec = (highlight.recommendations || []).find((item) => item.kind === "positive") || highlight.recommendations?.[0];
+  const highlights = trips.filter((trip) => (trip.recommendations || []).some((rec) => rec.kind === "positive")).slice(0, 4);
+
+  if (highlights.length > 0) {
+    const cardsHtml = highlights.map(highlight => {
+      const rec = (highlight.recommendations || []).find((item) => item.kind === "positive") || highlight.recommendations?.[0];
+      return `
+        <article class="recommendation-spotlight" data-open-trip="${highlight.id}" style="cursor:pointer;">
+          <p>“${escapeHTML(rec?.text || highlight.notes || "Una experiencia real para planificar mejor.")}”</p>
+          <span class="eyebrow">${escapeHTML(highlight.destination)} · ${escapeHTML(highlight.username)}</span>
+        </article>
+      `;
+    }).join("");
+    
     $("#highlightRecommendation").innerHTML = `
-      <article class="recommendation-spotlight" data-open-trip="${highlight.id}">
-        <p>“${escapeHTML(rec?.text || highlight.notes || "Una experiencia real para planificar mejor.")}”</p>
-        <span class="eyebrow">${escapeHTML(highlight.destination)} · ${escapeHTML(highlight.username)}</span>
-      </article>
+      <div class="trip-rail recommendation-rail">
+        ${cardsHtml}
+      </div>
     `;
   } else {
     $("#highlightRecommendation").innerHTML = renderEmpty("Sin recomendaciones todavía", "Cuando haya viajes publicados, las mejores recomendaciones aparecen acá.");

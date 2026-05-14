@@ -716,21 +716,28 @@ img {
 }
 
 .recommendation-spotlight {
-  padding: 18px;
-  border-radius: 26px;
+  padding: 20px 24px;
+  border-radius: 20px;
   background: var(--surface);
   box-shadow: var(--shadow-sm);
-  display: grid;
-  gap: 11px;
-  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-left: 4px solid var(--blue);
+  height: 100%;
 }
 
 .recommendation-spotlight p {
   margin: 0;
   color: var(--navy);
-  font-size: 16px;
-  line-height: 1.35;
-  font-weight: 800;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+.recommendation-rail {
+  grid-auto-columns: 85%;
 }
 
 .explore-intro {
@@ -1356,58 +1363,72 @@ input[type="range"] {
 
 .profile-top {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 18px;
+  text-align: center;
+  gap: 10px;
+  margin-bottom: 24px;
 }
 
 .profile-avatar {
-  width: 74px;
-  height: 74px;
-  border-radius: 26px;
+  width: 86px;
+  height: 86px;
+  border-radius: 50%;
   overflow: hidden;
-  border: 3px solid rgba(255,255,255,0.6);
+  border: 4px solid rgba(255,255,255,0.25);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
   background: #fff;
 }
 
 .profile-top h2 {
   margin: 0;
-  font-size: 24px;
-  line-height: 1.05;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .profile-top p {
-  margin: 6px 0 0;
-  color: rgba(255,255,255,0.72);
-  font-size: 13px;
-  font-weight: 700;
+  margin: 0;
+  color: rgba(255,255,255,0.85);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .profile-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 5px;
+  gap: 8px;
 }
 
 .profile-stat {
-  min-height: 50px;
-  border-radius: 15px;
-  background: rgba(255,255,255,0.14);
+  min-height: 66px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   display: grid;
   place-items: center;
   text-align: center;
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .profile-stat strong {
-  font-size: 13px;
+  display: block;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
 }
 
 .profile-stat span {
-  font-size: 9px;
+  display: block;
+  font-size: 10px;
   font-weight: 600;
-  color: rgba(255,255,255,0.72);
+  color: rgba(255,255,255,0.9);
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .traveler-card {
@@ -1487,6 +1508,10 @@ input[type="range"] {
   color: var(--muted);
   font-size: 11px;
   line-height: 1.45;
+}
+
+.saved-grid .empty-state, .masonry-grid .empty-state {
+  grid-column: 1 / -1;
 }
 
 .skeleton {
