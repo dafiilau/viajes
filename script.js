@@ -224,14 +224,10 @@ function renderStaticViews() {
     </header>
 
     <article class="home-hero">
-      <div class="hero-actions">
-        <span class="hero-chip">Experiencias reales</span>
-        <button class="hero-chip hero-chip-primary" type="button" data-route="explore">Explorar</button>
-      </div>
-      <div>
-        <h1>Viajá mejor con historias reales</h1>
-        <p>Presupuestos, decisiones y recomendaciones concretas compartidas por otros viajeros.</p>
-      </div>
+    <div>
+    <h1>Viajá mejor con historias reales</h1>
+    <p>Presupuestos, decisiones y recomendaciones concretas compartidas por otros viajeros.</p>
+    </div>
     </article>
 
     <div class="section-title">

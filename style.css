@@ -465,7 +465,7 @@ img {
 }
 
 .home-hero {
-  min-height: 276px;
+  min-height: 236px;
   border-radius: 32px;
   padding: 24px;
   color: #fff;
@@ -671,7 +671,7 @@ img {
   position: relative;
   display: flex;
   flex-direction: column;
-  height: 240px; /* Altura fija para que no queden desparejas */
+  height: 210px; /* Altura fija para que no queden desparejas */
 }
 
 .mini-trip-card:hover {
@@ -681,7 +681,7 @@ img {
 
 .mini-trip-image {
   flex-shrink: 0;
-  height: 140px; /* Tamaño de imagen fijo */
+  height: 100px; /* Tamaño de imagen fijo */
   background: #dfe8f5;
   overflow: hidden;
 }
