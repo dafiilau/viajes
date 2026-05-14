@@ -768,9 +768,9 @@ function renderProfile() {
         </div>
       </div>
       <div class="profile-stats">
-        <div class="profile-stat"><div><strong>${myTrips.length}</strong><span>Viajes</span></div></div>
-        <div class="profile-stat"><div><strong>${(profile.followers || []).length}</strong><span>Seguidores</span></div></div>
-        <div class="profile-stat"><div><strong>${(profile.following || []).length}</strong><span>Seguidos</span></div></div>
+        <div class="profile-stat"><div><strong>${myTrips.length}</strong> <span>Viajes</span></div></div>
+        <div class="profile-stat"><div><strong>${(profile.followers || []).length}</strong> <span>Seguidores</span></div></div>
+        <div class="profile-stat"><div><strong>${(profile.following || []).length}</strong> <span>Seguidos</span></div></div>
       </div>
     </section>
     <button id="logoutButton" class="btn btn-soft" type="button" style="width:100%;margin-bottom:18px;">Cerrar sesión</button>

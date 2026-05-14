@@ -1390,8 +1390,8 @@ input[type="range"] {
 }
 
 .profile-stat {
-  min-height: 70px;
-  border-radius: 20px;
+  min-height: 50px;
+  border-radius: 15px;
   background: rgba(255,255,255,0.14);
   display: grid;
   place-items: center;
@@ -1400,12 +1400,12 @@ input[type="range"] {
 }
 
 .profile-stat strong {
-  font-size: 18px;
+  font-size: 13px;
 }
 
 .profile-stat span {
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 9px;
+  font-weight: 600;
   color: rgba(255,255,255,0.72);
   text-transform: uppercase;
 }
@@ -1466,9 +1466,9 @@ input[type="range"] {
 }
 
 .empty-icon {
-  width: 58px;
-  height: 58px;
-  border-radius: 21px;
+  width: 40px;
+  height: 40px;
+  border-radius: 15px;
   display: grid;
   place-items: center;
   margin: 0 auto 13px;
@@ -1479,13 +1479,13 @@ input[type="range"] {
 .empty-state h3 {
   margin: 0;
   color: var(--navy);
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .empty-state p {
-  margin: 8px 0 0;
+  margin: 16px 0 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
